@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.register.RegisterFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/_15mdp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/_15mdp" />
+
+    <!--Scrollable Items-->
+    <ScrollView
+        android:id="@+id/contentScrollLay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/registerBtn"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/_20mdp">
+            <!--Cover-->
+            <ImageView
+                android:id="@+id/coverImg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:padding="@dimen/_20mdp"
+                tools:src="@drawable/register_logo"
+                tools:ignore="ContentDescription" />
+
+            <!--First Name-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fNameInputLay"
+                style="@style/DarkGreenTextInputLayout"
+                app:startIconDrawable="@drawable/ic_round_person_24"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/first_name">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/fNameEdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--First Name-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lastNameInputLay"
+                style="@style/DarkGreenTextInputLayout"
+                app:startIconDrawable="@drawable/ic_round_person_24"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/last_name">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/lastNameEdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--First Name-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/userNameInputLay"
+                style="@style/DarkGreenTextInputLayout"
+                app:startIconDrawable="@drawable/ic_round_person_24"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/username">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/userNameEdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--First Name-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailInputLay"
+                style="@style/DarkGreenTextInputLayout"
+                app:startIconDrawable="@drawable/ic_round_person_24"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailEdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+    </ScrollView>
+    <!--Register button-->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/registerBtn"
+        android:layout_width="0dp"
+        style="@style/DarkGreenMaterialButton"
+        android:layout_height="@dimen/_45mdp"
+        android:layout_marginVertical="@dimen/_15mdp"
+        android:text="@string/register"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guidelineRight"
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
+        app:layout_constraintTop_toBottomOf="@id/contentScrollLay" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
