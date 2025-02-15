@@ -1,16 +1,20 @@
 package ir.mahan.wikifoodia.ui
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
+import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
+import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import ir.mahan.wikifoodia.R
 import ir.mahan.wikifoodia.databinding.ActivityMainBinding
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     // Binding object
@@ -33,6 +37,11 @@ class MainActivity : AppCompatActivity() {
         // NavHost initialization
         navHost = supportFragmentManager.findFragmentById(R.id.navHost) as NavHostFragment
 
+    }
+
+    //Calligraphy
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(ViewPumpContextWrapper.wrap(newBase))
     }
 
     override fun onDestroy() {

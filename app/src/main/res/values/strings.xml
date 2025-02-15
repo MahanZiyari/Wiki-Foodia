@@ -33,4 +33,6 @@
     <string name="source">Source</string>
     <string name="check_your_connection">Check your connection</string>
     <string name="add_new_recipe_to_favorite">Add new recipe to favorite</string>
+    <string name="notValidName">Name cannot contains number or symbols</string>
+    <string name="notValidUserName">Onle letters, numbers and _ can be used for username</string>
 </resources>

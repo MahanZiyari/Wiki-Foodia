@@ -7,6 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android")
 }
 
+
 android {
     namespace = "ir.mahan.wikifoodia"
     compileSdk = 35

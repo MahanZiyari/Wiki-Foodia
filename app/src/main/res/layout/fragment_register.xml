@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.register.RegisterFragment">
 
     <androidx.constraintlayout.widget.Guideline
@@ -19,6 +20,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/_15mdp" />
+
 
     <!--Scrollable Items-->
     <ScrollView
@@ -107,14 +109,13 @@
     <!--Register button-->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/registerBtn"
-        android:layout_width="0dp"
         style="@style/DarkGreenMaterialButton"
+        android:layout_width="0dp"
         android:layout_height="@dimen/_45mdp"
-        android:layout_marginVertical="@dimen/_15mdp"
         android:text="@string/register"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contentScrollLay"
         app:layout_constraintEnd_toEndOf="@id/guidelineRight"
-        app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-        app:layout_constraintTop_toBottomOf="@id/contentScrollLay" />
+        app:layout_constraintStart_toStartOf="@id/guidelineLeft"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
