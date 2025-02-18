@@ -6,9 +6,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import ir.mahan.wikifoodia.R
 import ir.mahan.wikifoodia.databinding.ActivityMainBinding
@@ -36,7 +38,34 @@ class MainActivity : AppCompatActivity() {
         }
         // NavHost initialization
         navHost = supportFragmentManager.findFragmentById(R.id.navHost) as NavHostFragment
+        // Bottom nav initialization
+        binding.mainBottomNav.run {
+            background = null
+            setupWithNavController(navHost.navController)
+        }
+        // App Bar Visibility Handling
+        navHost.navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.splashFragment -> visibilityBottomMenu(false)
+                R.id.registerFragment -> visibilityBottomMenu(false)
+                //R.id.detailFragment -> visibilityBottomMenu(false)
+                //R.id.webViewFragment -> visibilityBottomMenu(false)
+                else -> visibilityBottomMenu(true)
+            }
+        }
 
+    }
+
+    private fun visibilityBottomMenu(isVisibility: Boolean) {
+        binding.apply {
+            if (isVisibility) {
+                mainAppBar.isVisible = true
+                mainFabMenu.isVisible = true
+            } else {
+                mainAppBar.isVisible = false
+                mainFabMenu.isVisible = false
+            }
+        }
     }
 
     //Calligraphy
