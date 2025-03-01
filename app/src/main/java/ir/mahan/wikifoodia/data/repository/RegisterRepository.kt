@@ -12,7 +12,7 @@ import dagger.hilt.android.scopes.ActivityRetainedScoped
 import ir.mahan.wikifoodia.data.source.RemoteDataSource
 import ir.mahan.wikifoodia.models.register.LocalRegisterData
 import ir.mahan.wikifoodia.ui.register.BodyRegister
-import ir.mahan.wikifoodia.utils.Constants
+import ir.mahan.wikifoodia.utils.constants.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map

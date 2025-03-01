@@ -7,13 +7,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ir.mahan.wikifoodia.data.network.ApiServices
-import ir.mahan.wikifoodia.utils.Constants.BASE_URL
-import ir.mahan.wikifoodia.utils.Constants.CONNECTION_TIMEOUT
+import ir.mahan.wikifoodia.utils.constants.Constants.BASE_URL
+import ir.mahan.wikifoodia.utils.constants.Constants.CONNECTION_TIMEOUT
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
