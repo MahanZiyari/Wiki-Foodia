@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomappbar.BottomAppBar
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.inflationx.viewpump.ViewPumpContextWrapper
 import ir.mahan.wikifoodia.R
@@ -55,6 +56,8 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
+
 
     private fun visibilityBottomMenu(isVisibility: Boolean) {
         binding.apply {

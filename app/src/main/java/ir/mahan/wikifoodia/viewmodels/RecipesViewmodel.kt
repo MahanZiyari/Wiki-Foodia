@@ -2,14 +2,17 @@ package ir.mahan.wikifoodia.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ir.mahan.wikifoodia.data.database.RecipeEntity
 import ir.mahan.wikifoodia.data.repository.RecipesRepository
 import ir.mahan.wikifoodia.models.recipe.ResponseRecipes
 import ir.mahan.wikifoodia.utils.constants.Constants
 import ir.mahan.wikifoodia.utils.ResponseHandler
 import ir.mahan.wikifoodia.utils.ResponseWrapper
 import ir.mahan.wikifoodia.utils.constants.APIParameters
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import timber.log.Timber
@@ -34,6 +37,23 @@ class RecipesViewmodel @Inject constructor(private val repository: RecipesReposi
         popularData.value = ResponseWrapper.Loading()
         val response = repository.remote.searchRecipes(queries)
         popularData.value = ResponseHandler(response).generalNetworkResponse()
+        val cachedResponse = popularData.value?.data
+        cachedResponse?.let {
+            cachePopularFoods(it)
+        }
+    }
+
+    // Local
+    val  popularFoodsFromDB = repository.local.getAllRecipes().asLiveData()
+    private fun cachePopularFoods(response: ResponseRecipes) {
+        val entity = RecipeEntity(
+            id = 0,
+            responseRecipes = response
+        )
+        savePopularFood(entity)
+    }
+    private fun savePopularFood(entity: RecipeEntity) = viewModelScope.launch(Dispatchers.IO) {
+        repository.local.saveRecipe(entity)
     }
 
     //---Recent---//
@@ -50,13 +70,27 @@ class RecipesViewmodel @Inject constructor(private val repository: RecipesReposi
     //Api
     val recentData = MutableLiveData<ResponseWrapper<ResponseRecipes>>()
     fun callRecentApi(queries: Map<String, String>) = viewModelScope.launch {
-        Timber.d("ViewModel: calling Recent API")
         recentData.value = ResponseWrapper.Loading()
         val response = repository.remote.searchRecipes(queries)
-        Timber.d("Response Code: ${response.code()}")
         recentData.value = checkResponseResult(response)
+        val cachedResponse = recentData.value?.data
+        cachedResponse?.let {
+            cacheRecentFoods(it)
+        }
     }
 
+    // Local
+    val  recentFoodsFromDB = repository.local.getAllRecipes().asLiveData()
+    private fun cacheRecentFoods(response: ResponseRecipes) {
+        val entity = RecipeEntity(
+            id = 1,
+            responseRecipes = response
+        )
+        saveRecentFood(entity)
+    }
+    private fun saveRecentFood(entity: RecipeEntity) = viewModelScope.launch(Dispatchers.IO) {
+        repository.local.saveRecipe(entity)
+    }
     private fun checkResponseResult(response: Response<ResponseRecipes>): ResponseWrapper<ResponseRecipes> {
         return when {
             response.message().contains("timeout") -> ResponseWrapper.Error("Timeout")

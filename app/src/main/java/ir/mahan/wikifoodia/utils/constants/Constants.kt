@@ -11,6 +11,12 @@ object Constants {
     const val DATASTORE_KEY_USERNAME = "datastore_key_username"
     const val DATASTORE_KEY_HASH = "datastore_key_hash"
 
+    //Database
+    const val RECIPE_TABLE_NAME = "recipe_table_name"
+    const val DATABASE_NAME = "database_name"
+    const val DETAIL_TABLE_NAME = "detail_table_name"
+    const val FAVORITE_TABLE_NAME = "favorite_table_name"
+
 
     //Other
     const val OLD_IMAGE_SIZE = "312x231.jpg"
