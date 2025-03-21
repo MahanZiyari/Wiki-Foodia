@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.todkars.shimmer.ShimmerRecyclerView
@@ -24,6 +25,7 @@ import ir.mahan.wikifoodia.utils.ResponseWrapper
 import ir.mahan.wikifoodia.utils.constants.Constants
 import ir.mahan.wikifoodia.utils.observeOnce
 import ir.mahan.wikifoodia.utils.setupRecyclerview
+import ir.mahan.wikifoodia.utils.showSnackBar
 import ir.mahan.wikifoodia.viewmodels.RecipesViewmodel
 import ir.mahan.wikifoodia.viewmodels.RegisterViewModel
 import kotlinx.coroutines.delay
@@ -40,6 +42,7 @@ class RecipeFragment : Fragment() {
 
     val registerViewModel: RegisterViewModel by viewModels()
     val recipeViewModel: RecipesViewmodel by viewModels()
+    private val args: RecipeFragmentArgs by navArgs()
     @Inject
     lateinit var popularItemsAdapter: PopularItemsAdapter
     @Inject
@@ -165,6 +168,7 @@ class RecipeFragment : Fragment() {
                 is ResponseWrapper.Error -> {
                     // Hide Loading
                     setupLoading(false, binding.recipesList)
+                    binding.root.showSnackBar(it.message.toString())
                 }
             }
         }
@@ -173,7 +177,7 @@ class RecipeFragment : Fragment() {
     private fun loadCachedRecentFoods() {
         recipeViewModel.recentFoodsFromDB.observeOnce(viewLifecycleOwner) {
             Timber.d("Database Item 1 Size: ${it[1].responseRecipes.results?.size}")
-            if (it.isNotEmpty()) {
+            if (it.isNotEmpty()  && it.size > 1) {
                 it[1].responseRecipes.results?.let { recentFoods ->
                     setupLoading(false, binding.recipesList)
                     fillRecipeAdapter(recentFoods)

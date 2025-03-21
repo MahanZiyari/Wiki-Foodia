@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import dagger.hilt.android.AndroidEntryPoint
 import ir.mahan.wikifoodia.R
 import ir.mahan.wikifoodia.databinding.FragmentLuckyBinding
 import ir.mahan.wikifoodia.databinding.FragmentSearchBinding
 
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
 
     // binding object

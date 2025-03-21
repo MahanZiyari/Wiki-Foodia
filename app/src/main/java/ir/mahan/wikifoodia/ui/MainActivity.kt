@@ -54,7 +54,10 @@ class MainActivity : AppCompatActivity() {
                 else -> visibilityBottomMenu(true)
             }
         }
-
+        // Opening Menu Fragment
+        binding.mainFabMenu.setOnClickListener {
+            navHost.navController.navigate(R.id.action_to_menuFragment)
+        }
     }
 
 

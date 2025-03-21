@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
@@ -27,8 +26,6 @@
         android:paddingBottom="0dp"
         android:background="@color/white"
         app:fabAlignmentMode="center"
-        app:fabAnchorMode="cradle"
-        app:fabAlignmentModeEndMargin="@dimen/_15mdp"
         app:fabAnimationMode="slide"
         app:fabCradleMargin="@dimen/_10mdp"
         app:fabCradleRoundedCornerRadius="@dimen/_15mdp"

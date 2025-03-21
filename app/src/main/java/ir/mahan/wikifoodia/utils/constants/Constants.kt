@@ -11,6 +11,13 @@ object Constants {
     const val DATASTORE_KEY_USERNAME = "datastore_key_username"
     const val DATASTORE_KEY_HASH = "datastore_key_hash"
 
+    //Menu datastore
+    const val MENU_DATASTORE = "menu_datastore"
+    const val MENU_MEAL_TITLE_KEY = "menu_meal_title_key"
+    const val MENU_MEAL_ID_KEY = "menu_meal_id_key"
+    const val MENU_DIET_TITLE_KEY = "menu_diet_title_key"
+    const val MENU_DIET_ID_KEY = "menu_diet_id_key"
+
     //Database
     const val RECIPE_TABLE_NAME = "recipe_table_name"
     const val DATABASE_NAME = "database_name"

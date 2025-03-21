@@ -43,3 +43,7 @@ fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observe: Observer<T>) {
         }
     })
 }
+
+fun String.uppercaseFirstLetter() : String {
+    return this.replace(this.first(), this.first().uppercaseChar())
+}

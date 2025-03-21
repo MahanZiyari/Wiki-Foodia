@@ -6,6 +6,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.mahan.wikifoodia.data.database.RecipeEntity
+import ir.mahan.wikifoodia.data.repository.MenuRepository
 import ir.mahan.wikifoodia.data.repository.RecipesRepository
 import ir.mahan.wikifoodia.models.recipe.ResponseRecipes
 import ir.mahan.wikifoodia.utils.constants.Constants
@@ -19,7 +20,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class RecipesViewmodel @Inject constructor(private val repository: RecipesRepository): ViewModel() {
+class RecipesViewmodel @Inject constructor(private val repository: RecipesRepository, private val menuRepository: MenuRepository): ViewModel() {
+
+
 
     //---Popular---//
     //Queries
@@ -57,14 +60,24 @@ class RecipesViewmodel @Inject constructor(private val repository: RecipesReposi
     }
 
     //---Recent---//
+    private var mealType = APIParameters.TYPE_MAIN_COURSE
+    private var dietType = APIParameters.DIET_GLUTEN_FREE
     //Queries
     fun recentQueries(): HashMap<String, String> {
         val queries: HashMap<String, String> = HashMap()
-        queries[APIParameters.API_KEY] = Constants.MY_API_KEY
-        queries[APIParameters.NUMBER] = APIParameters.FULL_COUNT.toString()
-        queries[APIParameters.TYPE] = APIParameters.TYPE_MAIN_COURSE
-        queries[APIParameters.DIET] = APIParameters.DIET_GLUTEN_FREE
-        queries[APIParameters.ADD_RECIPE_INFORMATION] = APIParameters.TRUE
+        viewModelScope.launch {
+            menuRepository.menuFilters.collect {
+                mealType = it.meal
+                dietType = it.diet
+                Timber.d("inside collect: $mealType, $dietType")
+                queries[APIParameters.API_KEY] = Constants.MY_API_KEY
+                queries[APIParameters.NUMBER] = APIParameters.FULL_COUNT.toString()
+                queries[APIParameters.TYPE] = mealType
+                queries[APIParameters.DIET] = dietType
+                queries[APIParameters.ADD_RECIPE_INFORMATION] = APIParameters.TRUE
+                Timber.d("Before Return: $mealType, $dietType")
+            }
+        }
         return queries
     }
     //Api

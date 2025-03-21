@@ -39,17 +39,37 @@
         android:id="@+id/recipeFragment"
         android:name="ir.mahan.wikifoodia.ui.recipe.RecipeFragment"
         android:label="fragment_recipe"
-        tools:layout="@layout/fragment_recipe" />
+        tools:layout="@layout/fragment_recipe" >
+        <argument
+            android:name="shouldUpdate"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+    <action
+        android:id="@+id/action_to_menuFragment"
+        app:destination="@id/menuFragment2" />
+    <dialog
+        android:id="@+id/menuFragment2"
+        android:name="ir.mahan.wikifoodia.ui.menu.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/actionMenuToRecipe"
+            app:destination="@id/recipeFragment" />
+    </dialog>
+    <!--Search-->
     <fragment
         android:id="@+id/searchFragment"
         android:name="ir.mahan.wikifoodia.ui.search.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
+    <!--Lucky-->
     <fragment
         android:id="@+id/luckyFragment"
         android:name="ir.mahan.wikifoodia.ui.lucky.LuckyFragment"
         android:label="fragment_lucky"
         tools:layout="@layout/fragment_lucky" />
+    <!--Favorites-->
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="ir.mahan.wikifoodia.ui.favorites.FavoritesFragment"
