@@ -5,6 +5,10 @@ plugins {
     id("com.google.devtools.ksp")
     //Hilt
     id("com.google.dagger.hilt.android")
+    // Safe Args
+    id("androidx.navigation.safeargs")
+    // Kotlin Parcelize
+    id("kotlin-parcelize")
 }
 
 

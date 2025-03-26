@@ -40,19 +40,39 @@
         android:name="ir.mahan.wikifoodia.ui.recipe.RecipeFragment"
         android:label="fragment_recipe"
         tools:layout="@layout/fragment_recipe" />
+    <!--Search-->
     <fragment
         android:id="@+id/searchFragment"
         android:name="ir.mahan.wikifoodia.ui.search.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
+    <!--Lucky-->
     <fragment
         android:id="@+id/luckyFragment"
         android:name="ir.mahan.wikifoodia.ui.lucky.LuckyFragment"
         android:label="fragment_lucky"
         tools:layout="@layout/fragment_lucky" />
+    <!--Favorites-->
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="ir.mahan.wikifoodia.ui.favorites.FavoritesFragment"
         android:label="fragment_favorites"
         tools:layout="@layout/fragment_favorites" />
+    <!--Details-->
+    <action
+        android:id="@+id/action_to_detailsFragment"
+        app:destination="@id/detailFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="ir.mahan.wikifoodia.ui.details.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <argument
+            android:name="foodID"
+            app:argType="integer" />
+    </fragment>
 </navigation>

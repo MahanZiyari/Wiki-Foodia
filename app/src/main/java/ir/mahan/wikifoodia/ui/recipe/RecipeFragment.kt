@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.todkars.shimmer.ShimmerRecyclerView
@@ -131,6 +132,8 @@ class RecipeFragment : Fragment() {
         snapHelper.attachToRecyclerView(binding.popularList)
         popularItemsAdapter.setOnItemClickListener {
             // Todo: Go to Detail Screen
+            val action = RecipeFragmentDirections.actionToDetailsFragment(it)
+            findNavController().navigate(action)
         }
     }
 
@@ -194,6 +197,8 @@ class RecipeFragment : Fragment() {
         )
         recipeItemsAdapter.setOnItemClickListener {
             // Todo: Go to Detail Screen
+            val action = RecipeFragmentDirections.actionToDetailsFragment(it)
+            findNavController().navigate(action)
         }
     }
 
