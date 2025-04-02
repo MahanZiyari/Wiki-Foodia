@@ -3,6 +3,8 @@ package ir.mahan.wikifoodia.utils.constants
 object Constants {
 
     const val BASE_URL = "https://api.spoonacular.com/"
+    const val BASE_URL_IMAGE_INGREDIENTS = "https://spoonacular.com/cdn/ingredients_100x100/"
+    const val BASE_URL_IMAGE_RECIPE = "https://spoonacular.com/recipeImages/"
     const val CONNECTION_TIMEOUT = 60L
     const val MY_API_KEY = "c9d21a59cd2f48cb83f0ef9a97a5ff09"
 
@@ -30,4 +32,5 @@ object Constants {
     const val NEW_IMAGE_SIZE = "636x393.jpg"
     const val REPEAT_TIME = 100
     const val DELAY_TIME = 3000L
+    var STEPS_COUNT = 0
 }

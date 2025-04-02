@@ -39,24 +39,7 @@
         android:id="@+id/recipeFragment"
         android:name="ir.mahan.wikifoodia.ui.recipe.RecipeFragment"
         android:label="fragment_recipe"
-        tools:layout="@layout/fragment_recipe" >
-        <argument
-            android:name="shouldUpdate"
-            app:argType="boolean"
-            android:defaultValue="false" />
-    </fragment>
-    <action
-        android:id="@+id/action_to_menuFragment"
-        app:destination="@id/menuFragment2" />
-    <dialog
-        android:id="@+id/menuFragment2"
-        android:name="ir.mahan.wikifoodia.ui.menu.MenuFragment"
-        android:label="fragment_menu"
-        tools:layout="@layout/fragment_menu" >
-        <action
-            android:id="@+id/actionMenuToRecipe"
-            app:destination="@id/recipeFragment" />
-    </dialog>
+        tools:layout="@layout/fragment_recipe" />
     <!--Search-->
     <fragment
         android:id="@+id/searchFragment"
@@ -75,4 +58,33 @@
         android:name="ir.mahan.wikifoodia.ui.favorites.FavoritesFragment"
         android:label="fragment_favorites"
         tools:layout="@layout/fragment_favorites" />
+    <!--Details-->
+    <action
+        android:id="@+id/action_to_detailsFragment"
+        app:destination="@id/detailFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="ir.mahan.wikifoodia.ui.details.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <argument
+            android:name="foodID"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_detailFragment_to_stepsFragment2"
+            app:destination="@id/stepsFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/stepsFragment"
+        android:name="ir.mahan.wikifoodia.ui.steps.StepsFragment"
+        android:label="fragment_steps"
+        tools:layout="@layout/fragment_steps" >
+        <argument
+            android:name="data"
+            app:argType="ir.mahan.wikifoodia.models.detail.ResponseDetail$AnalyzedInstruction" />
+    </dialog>
 </navigation>

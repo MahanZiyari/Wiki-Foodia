@@ -3,6 +3,7 @@ package ir.mahan.wikifoodia.utils
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -46,4 +47,14 @@ fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observe: Observer<T>) {
 
 fun String.uppercaseFirstLetter() : String {
     return this.replace(this.first(), this.first().uppercaseChar())
+}
+
+fun View.switchVisibilityBy(otherView: View) {
+    if (this.isVisible){
+        this.isVisible = false
+        otherView.isVisible = true
+    } else {
+        this.isVisible = true
+        otherView.isVisible = false
+    }
 }
