@@ -68,7 +68,7 @@ class DetailFragment : Fragment() {
             //Back
             backImg.setOnClickListener { findNavController().popBackStack() }
             // Details
-            viewModel.LatestDetailData.observe(viewLifecycleOwner) {
+            viewModel.latestDetailData.observe(viewLifecycleOwner) {
                 when (it) {
                     is ResponseWrapper.Loading -> {
                         binding.loading.switchVisibilityBy(contentLay)
@@ -137,7 +137,8 @@ class DetailFragment : Fragment() {
         //Steps
         initStepsList(data.analyzedInstructions!![0].steps!!)
         stepsShowMore.setOnClickListener {
-
+            val direction = DetailFragmentDirections.actionDetailFragmentToStepsFragment2(data.analyzedInstructions[0])
+            findNavController().navigate(direction)
         }
         //Diets
         setupChip(data.diets!!, dietsChipGroup)
