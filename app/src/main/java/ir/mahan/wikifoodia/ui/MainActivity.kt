@@ -51,13 +51,13 @@ class MainActivity : AppCompatActivity() {
                 R.id.registerFragment -> visibilityBottomMenu(false)
                 R.id.detailFragment -> visibilityBottomMenu(false)
                 R.id.stepsFragment -> visibilityBottomMenu(false)
-                //R.id.webViewFragment -> visibilityBottomMenu(false)
+                R.id.webViewFragment -> visibilityBottomMenu(false)
                 else -> visibilityBottomMenu(true)
             }
         }
         // Opening Menu Fragment
         binding.mainFabMenu.setOnClickListener {
-            navHost.navController.navigate(R.id.action_to_menuFragment)
+            //navHost.navController.navigate(R.id.action_to_menuFragment)
         }
     }
 

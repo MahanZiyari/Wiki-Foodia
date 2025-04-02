@@ -103,7 +103,8 @@ class DetailFragment : Fragment() {
         data.sourceUrl?.let { source ->
             sourceImg.isVisible = true
             sourceImg.setOnClickListener {
-                // Todo: Open Source
+                val direction = DetailFragmentDirections.actionToWebViewFragment(source)
+                findNavController().navigate(direction)
             }
         }
         //Text
