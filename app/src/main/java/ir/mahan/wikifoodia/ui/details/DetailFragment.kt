@@ -1,7 +1,5 @@
 package ir.mahan.wikifoodia.ui.details
 
-import ir.mahan.wikifoodia.adapter.InstructionsAdapter
-import ir.mahan.wikifoodia.adapter.StepsAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +9,7 @@ import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,10 +20,13 @@ import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import ir.mahan.wikifoodia.R
+import ir.mahan.wikifoodia.adapter.InstructionsAdapter
 import ir.mahan.wikifoodia.adapter.SimilarAdapter
+import ir.mahan.wikifoodia.adapter.StepsAdapter
 import ir.mahan.wikifoodia.databinding.FragmentDetailBinding
 import ir.mahan.wikifoodia.models.detail.ResponseDetail
 import ir.mahan.wikifoodia.models.detail.ResponseSimilar
+import ir.mahan.wikifoodia.utils.NetworkChecker
 import ir.mahan.wikifoodia.utils.ResponseWrapper
 import ir.mahan.wikifoodia.utils.constants.Constants
 import ir.mahan.wikifoodia.utils.convertMinToHour
@@ -32,6 +34,9 @@ import ir.mahan.wikifoodia.utils.setDynamicallyColor
 import ir.mahan.wikifoodia.utils.setupRecyclerview
 import ir.mahan.wikifoodia.utils.switchVisibilityBy
 import ir.mahan.wikifoodia.viewmodels.DetailViewmodel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -46,10 +51,14 @@ class DetailFragment : Fragment() {
     @Inject lateinit var stepsAdapter: StepsAdapter
     @Inject lateinit var similarAdapter: SimilarAdapter
 
+    @Inject
+    lateinit var networkChecker: NetworkChecker
+
     //ViewModel
     private val viewModel: DetailViewmodel by viewModels()
     private val args: DetailFragmentArgs by navArgs()
     private var recipeId = 0
+    private var isCached = false
 
 
     override fun onCreateView(
@@ -66,21 +75,41 @@ class DetailFragment : Fragment() {
         args.let {
             recipeId = args.foodID
             if (recipeId > 0) {
-                viewModel.getFoodDetailsByApi(it.foodID)
-                viewModel.getSimilarByApi(it.foodID)
+                Timber.d("Recipe ID: $recipeId")
+                checkForCachedDetail()
             }
-        }
+        }// end of args
+
         binding.apply {
             //Back
             backImg.setOnClickListener { findNavController().popBackStack() }
-            // Details
-            loadDetailFromApi()
-            //  Similar
-            loadSimilarItemsByApi()
-        }
-    }
+            // Handle network
+            lifecycleScope.launch {
+                networkChecker.observeNetworkState().collect { isAvailable ->
+                    delay(200)
+                    when (isAvailable) {
+                        true -> {
+                            Timber.d("Cache: $isCached  Network: $isAvailable")
+                            if (isCached) {
+                                loadCachedDetail()
+                            } else loadDetailFromApi()
+                            loadSimilarItemsByApi()
+                        }
+                        false -> {
+                            Timber.d("Cache: $isCached  Network: $isAvailable")
+                            if (isCached)
+                                loadCachedDetail()
+                            else
+                                internetLay.isVisible = true
+                        }
+                    }
+                }
+            }
+        }// end of binding
+    }// end of onViewCreated
 
     private fun FragmentDetailBinding.loadDetailFromApi() {
+        viewModel.getFoodDetailsByApi(recipeId)
         viewModel.latestDetailData.observe(viewLifecycleOwner) {
             when (it) {
                 is ResponseWrapper.Loading -> {
@@ -102,6 +131,7 @@ class DetailFragment : Fragment() {
     }
 
     private fun FragmentDetailBinding.loadSimilarItemsByApi() {
+        viewModel.getSimilarByApi(recipeId)
         viewModel.latestSimilarData.observe(viewLifecycleOwner) {
             when (it) {
                 is ResponseWrapper.Loading -> {
@@ -119,6 +149,22 @@ class DetailFragment : Fragment() {
                     similarList.hideShimmer()
                 }
             }
+        }
+    }
+
+    private fun checkForCachedDetail() {
+        viewModel.checkForDetailExistence(recipeId)
+        viewModel.isThisDetailEntityExist.observe(viewLifecycleOwner) {
+            isCached = it
+            Timber.d("is Cached: $isCached")
+        }
+    }
+
+    private fun loadCachedDetail() {
+        viewModel.getLocalDetailData(recipeId).observe(viewLifecycleOwner) {
+            binding.fillViews(it.result)
+            binding.contentLay.isVisible = true
+            Timber.d("Result ID: ${it.result.id}")
         }
     }
 

@@ -1,4 +1,4 @@
-package ir.mahan.wikifoodia.data.database
+package ir.mahan.wikifoodia.data.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

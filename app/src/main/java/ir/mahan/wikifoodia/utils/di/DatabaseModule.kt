@@ -22,7 +22,7 @@ object DatabaseModule {
         RecipeAppDatabase::class.java,
         Constants.DATABASE_NAME
     ).allowMainThreadQueries()
-        .fallbackToDestructiveMigrationFrom()
+        .fallbackToDestructiveMigration()
         .build()
 
 
