@@ -12,4 +12,5 @@ class DetailRepository @Inject constructor(
 ) {
 
     suspend fun getFoodDetailByID(id: Int) = remoteDataSource.getFoodDetailById(id)
+    suspend fun getSimilarItemsById(id: Int) = remoteDataSource.getSimilarItemsById(id)
 }

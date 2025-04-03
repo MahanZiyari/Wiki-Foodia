@@ -21,8 +21,10 @@ import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import ir.mahan.wikifoodia.R
+import ir.mahan.wikifoodia.adapter.SimilarAdapter
 import ir.mahan.wikifoodia.databinding.FragmentDetailBinding
 import ir.mahan.wikifoodia.models.detail.ResponseDetail
+import ir.mahan.wikifoodia.models.detail.ResponseSimilar
 import ir.mahan.wikifoodia.utils.ResponseWrapper
 import ir.mahan.wikifoodia.utils.constants.Constants
 import ir.mahan.wikifoodia.utils.convertMinToHour
@@ -42,6 +44,7 @@ class DetailFragment : Fragment() {
 
     @Inject lateinit var instructionsAdapter: InstructionsAdapter
     @Inject lateinit var stepsAdapter: StepsAdapter
+    @Inject lateinit var similarAdapter: SimilarAdapter
 
     //ViewModel
     private val viewModel: DetailViewmodel by viewModels()
@@ -62,30 +65,73 @@ class DetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         args.let {
             recipeId = args.foodID
-            if (recipeId > 0) viewModel.getFoodDetailsByApi(it.foodID)
+            if (recipeId > 0) {
+                viewModel.getFoodDetailsByApi(it.foodID)
+                viewModel.getSimilarByApi(it.foodID)
+            }
         }
         binding.apply {
             //Back
             backImg.setOnClickListener { findNavController().popBackStack() }
             // Details
-            viewModel.latestDetailData.observe(viewLifecycleOwner) {
-                when (it) {
-                    is ResponseWrapper.Loading -> {
-                        binding.loading.switchVisibilityBy(contentLay)
-                    }
+            loadDetailFromApi()
+            //  Similar
+            loadSimilarItemsByApi()
+        }
+    }
 
-                    is ResponseWrapper.Success -> {
-                        it.data?.let { responseDetail ->
-                            fillViews(responseDetail)
-                            binding.contentLay.switchVisibilityBy(loading)
-                        }
-                    }
+    private fun FragmentDetailBinding.loadDetailFromApi() {
+        viewModel.latestDetailData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ResponseWrapper.Loading -> {
+                    binding.loading.switchVisibilityBy(contentLay)
+                }
 
-                    is ResponseWrapper.Error -> {
+                is ResponseWrapper.Success -> {
+                    it.data?.let { responseDetail ->
+                        fillViews(responseDetail)
                         binding.contentLay.switchVisibilityBy(loading)
                     }
                 }
+
+                is ResponseWrapper.Error -> {
+                    binding.contentLay.switchVisibilityBy(loading)
+                }
             }
+        }
+    }
+
+    private fun FragmentDetailBinding.loadSimilarItemsByApi() {
+        viewModel.latestSimilarData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ResponseWrapper.Loading -> {
+                    similarList.showShimmer()
+                }
+
+                is ResponseWrapper.Success -> {
+                    it.data?.let { responseSimilar ->
+                        similarList.hideShimmer()
+                        fillSimilarList(responseSimilar)
+                    }
+                }
+
+                is ResponseWrapper.Error -> {
+                    similarList.hideShimmer()
+                }
+            }
+        }
+    }
+
+    private fun fillSimilarList(similarItems: ResponseSimilar)  {
+        similarAdapter.setData(similarItems)
+        binding.similarList.setupRecyclerview(
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false),
+            similarAdapter
+        )
+        //Click
+        similarAdapter.setOnItemClickListener {
+            val action = DetailFragmentDirections.actionToDetailsFragment(it)
+            findNavController().navigate(action)
         }
     }
 
