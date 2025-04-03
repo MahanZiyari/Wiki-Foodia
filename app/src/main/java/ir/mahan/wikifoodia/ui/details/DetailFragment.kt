@@ -1,10 +1,12 @@
 package ir.mahan.wikifoodia.ui.details
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat.setTint
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -23,6 +25,7 @@ import ir.mahan.wikifoodia.R
 import ir.mahan.wikifoodia.adapter.InstructionsAdapter
 import ir.mahan.wikifoodia.adapter.SimilarAdapter
 import ir.mahan.wikifoodia.adapter.StepsAdapter
+import ir.mahan.wikifoodia.data.database.entity.FavoriteEntity
 import ir.mahan.wikifoodia.databinding.FragmentDetailBinding
 import ir.mahan.wikifoodia.models.detail.ResponseDetail
 import ir.mahan.wikifoodia.models.detail.ResponseSimilar
@@ -31,7 +34,9 @@ import ir.mahan.wikifoodia.utils.ResponseWrapper
 import ir.mahan.wikifoodia.utils.constants.Constants
 import ir.mahan.wikifoodia.utils.convertMinToHour
 import ir.mahan.wikifoodia.utils.setDynamicallyColor
+import ir.mahan.wikifoodia.utils.setTint
 import ir.mahan.wikifoodia.utils.setupRecyclerview
+import ir.mahan.wikifoodia.utils.showSnackBar
 import ir.mahan.wikifoodia.utils.switchVisibilityBy
 import ir.mahan.wikifoodia.viewmodels.DetailViewmodel
 import kotlinx.coroutines.delay
@@ -59,6 +64,7 @@ class DetailFragment : Fragment() {
     private val args: DetailFragmentArgs by navArgs()
     private var recipeId = 0
     private var isCached = false
+    private var isFromFavorite = false
 
 
     override fun onCreateView(
@@ -77,37 +83,44 @@ class DetailFragment : Fragment() {
             if (recipeId > 0) {
                 Timber.d("Recipe ID: $recipeId")
                 checkForCachedDetail()
+                viewModel.checkForFavoriteExistence(recipeId)
             }
         }// end of args
-
+        // Handle UI
         binding.apply {
             //Back
             backImg.setOnClickListener { findNavController().popBackStack() }
-            // Handle network
-            lifecycleScope.launch {
-                networkChecker.observeNetworkState().collect { isAvailable ->
-                    delay(200)
-                    when (isAvailable) {
-                        true -> {
-                            Timber.d("Cache: $isCached  Network: $isAvailable")
-                            if (isCached) {
-                                loadCachedDetail()
-                            } else loadDetailFromApi()
-                            loadSimilarItemsByApi()
-                        }
-                        false -> {
-                            Timber.d("Cache: $isCached  Network: $isAvailable")
-                            if (isCached)
-                                loadCachedDetail()
-                            else
-                                internetLay.isVisible = true
-                        }
-                    }
-                }
-            }
+            // Data Management
+            loadDetailsByAppropriateSource()
+
         }// end of binding
     }// end of onViewCreated
 
+    private fun FragmentDetailBinding.loadDetailsByAppropriateSource() {
+        lifecycleScope.launch {
+            networkChecker.observeNetworkState().collect { isAvailable ->
+                delay(200)
+                when (isAvailable) {
+                    true -> {
+                        Timber.d("Cache: $isCached  Network: $isAvailable")
+                        if (isCached) {
+                            loadCachedDetail()
+                        } else loadDetailFromApi()
+                        loadSimilarItemsByApi()
+                    }
+
+                    false -> {
+                        Timber.d("Cache: $isCached  Network: $isAvailable")
+                        if (isCached)
+                            loadCachedDetail()
+                        else
+                            internetLay.isVisible = true
+                    }
+                }
+            }
+        }
+    }
+    // Api Calls
     private fun FragmentDetailBinding.loadDetailFromApi() {
         viewModel.getFoodDetailsByApi(recipeId)
         viewModel.latestDetailData.observe(viewLifecycleOwner) {
@@ -129,7 +142,6 @@ class DetailFragment : Fragment() {
             }
         }
     }
-
     private fun FragmentDetailBinding.loadSimilarItemsByApi() {
         viewModel.getSimilarByApi(recipeId)
         viewModel.latestSimilarData.observe(viewLifecycleOwner) {
@@ -181,6 +193,7 @@ class DetailFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun FragmentDetailBinding.fillViews(data: ResponseDetail) {
         //Image
         val imageSplit = data.image!!.split("-")
@@ -191,6 +204,12 @@ class DetailFragment : Fragment() {
             memoryCachePolicy(CachePolicy.ENABLED)
             error(R.drawable.ic_placeholder)
         }
+        // Favorites
+        favoriteImg.setOnClickListener {
+            root.showSnackBar("Clicked: $isFromFavorite")
+            if (isFromFavorite) removeFromFavorites(data.id!!, data) else saveToFavorites(data.id!!, data)
+        }
+        checkForFavoriteExistence()
         //Source
         data.sourceUrl?.let { source ->
             sourceImg.isVisible = true
@@ -235,6 +254,32 @@ class DetailFragment : Fragment() {
         }
         //Diets
         setupChip(data.diets!!, dietsChipGroup)
+    }
+
+    // Favorites OPs
+    private fun FragmentDetailBinding.checkForFavoriteExistence() {
+        viewModel.existsFavoriteData.observe(viewLifecycleOwner) {
+            isFromFavorite = it
+            if (it) {
+                favoriteImg.apply {
+                    setTint(R.color.tart_orange)
+                    setImageResource(R.drawable.ic_heart_circle_minus)
+                }
+            } else {
+                favoriteImg.apply {
+                    setTint(R.color.persianGreen)
+                    setImageResource(R.drawable.ic_heart_circle_plus)
+                }
+            }
+        }
+    }
+    private fun saveToFavorites(id: Int, result: ResponseDetail) {
+        val entity = FavoriteEntity(id, result)
+        viewModel.saveFavorite(entity)
+    }
+    private fun removeFromFavorites(id: Int, result: ResponseDetail) {
+        val entity = FavoriteEntity(id, result)
+        viewModel.deleteFavorite(entity)
     }
 
     private fun initInstructionsList(list: List<ResponseDetail.ExtendedIngredient>) {

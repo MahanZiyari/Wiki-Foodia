@@ -6,6 +6,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ir.mahan.wikifoodia.data.database.entity.DetailEntity
+import ir.mahan.wikifoodia.data.database.entity.FavoriteEntity
 import ir.mahan.wikifoodia.data.repository.DetailRepository
 import ir.mahan.wikifoodia.models.detail.ResponseDetail
 import ir.mahan.wikifoodia.models.detail.ResponseSimilar
@@ -51,5 +52,19 @@ class DetailViewmodel @Inject constructor(private val repository: DetailReposito
         latestSimilarData.value = ResponseWrapper.Loading()
         val response = repository.getSimilarItemsById(foodId)
         latestSimilarData.value = ResponseHandler(response).generalNetworkResponse()
+    }
+
+    //Favorite
+    fun saveFavorite(entity: FavoriteEntity) = viewModelScope.launch {
+        repository.saveFavorite(entity)
+    }
+
+    fun deleteFavorite(entity: FavoriteEntity) = viewModelScope.launch {
+        repository.deleteFavorite(entity)
+    }
+
+    val existsFavoriteData = MutableLiveData<Boolean>()
+    fun checkForFavoriteExistence(id: Int) = viewModelScope.launch {
+        repository.checkFavoriteEntityExistence(id).collect { existsFavoriteData.postValue(it) }
     }
 }

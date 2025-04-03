@@ -1,6 +1,8 @@
 package ir.mahan.wikifoodia.utils
 
+import android.content.res.ColorStateList
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -57,4 +59,8 @@ fun View.switchVisibilityBy(otherView: View) {
         this.isVisible = true
         otherView.isVisible = false
     }
+}
+
+fun ImageView.setTint(color: Int) {
+    imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, color))
 }
