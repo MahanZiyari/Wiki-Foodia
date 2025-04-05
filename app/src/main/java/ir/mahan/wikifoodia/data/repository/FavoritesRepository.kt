@@ -12,5 +12,4 @@ class FavoritesRepository @Inject constructor(
     private val localDataSource: LocalDataSource
 ) {
     fun getAllFavorites() = localDataSource.getAllFavorites()
-
 }

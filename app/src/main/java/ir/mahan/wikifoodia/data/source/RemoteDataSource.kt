@@ -9,4 +9,6 @@ class RemoteDataSource @Inject constructor(private val api: ApiServices) {
     suspend fun searchRecipes(queries: Map<String, String>) = api.searchRecipes(queries)
     suspend fun getFoodDetailById(id: Int) = api.getFoodDetailById(id)
     suspend fun getSimilarItemsById(id: Int) = api.getSimilarItemsById(id)
+    suspend fun getRandomRecipe(queries: Map<String, String>) = api.getRandomRecipe(queries)
+
 }

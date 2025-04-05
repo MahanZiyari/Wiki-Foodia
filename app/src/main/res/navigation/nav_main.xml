@@ -39,7 +39,12 @@
         android:id="@+id/recipeFragment"
         android:name="ir.mahan.wikifoodia.ui.recipe.RecipeFragment"
         android:label="fragment_recipe"
-        tools:layout="@layout/fragment_recipe" />
+        tools:layout="@layout/fragment_recipe" >
+        <argument
+            android:name="shoudReload"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
     <!--Search-->
     <fragment
         android:id="@+id/searchFragment"
@@ -74,10 +79,11 @@
         <argument
             android:name="foodID"
             app:argType="integer" />
-        <action
-            android:id="@+id/action_detailFragment_to_stepsFragment2"
-            app:destination="@id/stepsFragment" />
     </fragment>
+    <action
+        android:id="@+id/action_to_stepsFragment"
+        app:destination="@id/stepsFragment" />
+    <!--Steps-->
     <dialog
         android:id="@+id/stepsFragment"
         android:name="ir.mahan.wikifoodia.ui.steps.StepsFragment"
@@ -87,4 +93,27 @@
             android:name="data"
             app:argType="ir.mahan.wikifoodia.models.detail.ResponseDetail$AnalyzedInstruction" />
     </dialog>
+    <!--Menu-->
+    <dialog
+        android:id="@+id/menuFragment"
+        android:name="ir.mahan.wikifoodia.ui.menu.MenuFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_menu" />
+    <!--WebView-->
+    <fragment
+        android:id="@+id/webViewFragment"
+        android:name="ir.mahan.wikifoodia.ui.webview.WebViewFragment"
+        android:label="fragment_web_view"
+        tools:layout="@layout/fragment_web_view" >
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
+    <action
+        android:id="@+id/action_to_webViewFragment"
+        app:destination="@id/webViewFragment"
+        app:enterAnim="@anim/nav_default_enter_anim"
+        app:exitAnim="@anim/nav_default_exit_anim"
+        app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+        app:popExitAnim="@anim/nav_default_pop_exit_anim" />
 </navigation>
