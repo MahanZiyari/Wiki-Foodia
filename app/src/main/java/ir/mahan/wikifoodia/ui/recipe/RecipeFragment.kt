@@ -29,6 +29,7 @@ import ir.mahan.wikifoodia.utils.setupRecyclerview
 import ir.mahan.wikifoodia.utils.showSnackBar
 import ir.mahan.wikifoodia.viewmodels.RecipesViewmodel
 import ir.mahan.wikifoodia.viewmodels.RegisterViewModel
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -41,8 +42,8 @@ class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
     private val binding get() = _binding!!
 
-    val registerViewModel: RegisterViewModel by viewModels()
-    val recipeViewModel: RecipesViewmodel by viewModels()
+    private val registerViewModel: RegisterViewModel by viewModels()
+    private val recipeViewModel: RecipesViewmodel by viewModels()
     private val args: RecipeFragmentArgs by navArgs()
     @Inject
     lateinit var popularItemsAdapter: PopularItemsAdapter
@@ -141,9 +142,13 @@ class RecipeFragment : Fragment() {
     }
 
     private fun setAutoScroll(results: List<ResponseRecipes.Result>) {
+        Timber.tag("TEST").d("Start Auto Scroll")
         lifecycleScope.launch {
+            Timber.tag("TEST").d("Inside lifecycle scope")
             repeat(Constants.REPEAT_TIME) {
+                Timber.tag("TEST").d("Inside repeat")
                 results.indices.forEach { index ->
+                    Timber.tag("TEST").d("index: $index")
                     delay(Constants.DELAY_TIME)
                     binding.popularList.smoothScrollToPosition(index)
                 }
@@ -191,7 +196,7 @@ class RecipeFragment : Fragment() {
 
     private fun fillRecipeAdapter(result: List<ResponseRecipes.Result>) {
         recipeItemsAdapter.setData(result)
-        setAutoScroll(result)
+        //setAutoScroll(result)
     }
 
     private fun initRecentAdapter() {
