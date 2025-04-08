@@ -33,4 +33,5 @@ object Constants {
     const val REPEAT_TIME = 100
     const val DELAY_TIME = 3000L
     var STEPS_COUNT = 0
+    const val DEBUG_TAG = "Debug"
 }

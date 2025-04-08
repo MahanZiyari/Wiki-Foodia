@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ir.mahan.wikifoodia.data.database.RecipeEntity
+import ir.mahan.wikifoodia.data.database.entity.RecipeEntity
 import ir.mahan.wikifoodia.data.repository.MenuRepository
 import ir.mahan.wikifoodia.data.repository.RecipesRepository
 import ir.mahan.wikifoodia.models.recipe.ResponseRecipes
@@ -37,6 +37,7 @@ class RecipesViewmodel @Inject constructor(private val repository: RecipesReposi
     //Api
     val popularData = MutableLiveData<ResponseWrapper<ResponseRecipes>>()
     fun callPopularApi(queries: Map<String, String>) = viewModelScope.launch {
+        Timber.tag(Constants.DEBUG_TAG).d("ViewModel: Calling  Popular API")
         popularData.value = ResponseWrapper.Loading()
         val response = repository.remote.searchRecipes(queries)
         popularData.value = ResponseHandler(response).generalNetworkResponse()
@@ -69,20 +70,20 @@ class RecipesViewmodel @Inject constructor(private val repository: RecipesReposi
             menuRepository.menuFilters.collect {
                 mealType = it.meal
                 dietType = it.diet
-                Timber.d("inside collect: $mealType, $dietType")
-                queries[APIParameters.API_KEY] = Constants.MY_API_KEY
-                queries[APIParameters.NUMBER] = APIParameters.FULL_COUNT.toString()
-                queries[APIParameters.TYPE] = mealType
-                queries[APIParameters.DIET] = dietType
-                queries[APIParameters.ADD_RECIPE_INFORMATION] = APIParameters.TRUE
-                Timber.d("Before Return: $mealType, $dietType")
+                Timber.tag(Constants.DEBUG_TAG).d("ViewModel: New Queries: $dietType $mealType")
             }
         }
+        queries[APIParameters.API_KEY] = Constants.MY_API_KEY
+        queries[APIParameters.NUMBER] = APIParameters.FULL_COUNT.toString()
+        queries[APIParameters.TYPE] = mealType
+        queries[APIParameters.DIET] = dietType
+        queries[APIParameters.ADD_RECIPE_INFORMATION] = APIParameters.TRUE
         return queries
     }
     //Api
     val recentData = MutableLiveData<ResponseWrapper<ResponseRecipes>>()
     fun callRecentApi(queries: Map<String, String>) = viewModelScope.launch {
+        Timber.tag(Constants.DEBUG_TAG).d("ViewModel: Calling  Recent API \nQUERIES: ${queries}")
         recentData.value = ResponseWrapper.Loading()
         val response = repository.remote.searchRecipes(queries)
         recentData.value = checkResponseResult(response)

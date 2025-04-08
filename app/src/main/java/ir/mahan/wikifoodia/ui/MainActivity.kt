@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         }
         // Opening Menu Fragment
         binding.mainFabMenu.setOnClickListener {
-            //navHost.navController.navigate(R.id.action_to_menuFragment)
+            navHost.navController.navigate(R.id.action_to_menuFragment)
         }
     }
 

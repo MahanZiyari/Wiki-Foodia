@@ -29,11 +29,11 @@ import ir.mahan.wikifoodia.utils.setupRecyclerview
 import ir.mahan.wikifoodia.utils.showSnackBar
 import ir.mahan.wikifoodia.viewmodels.RecipesViewmodel
 import ir.mahan.wikifoodia.viewmodels.RegisterViewModel
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class RecipeFragment : Fragment() {
@@ -45,11 +45,11 @@ class RecipeFragment : Fragment() {
     private val registerViewModel: RegisterViewModel by viewModels()
     private val recipeViewModel: RecipesViewmodel by viewModels()
     private val args: RecipeFragmentArgs by navArgs()
+    private var shouldReload = false
     @Inject
     lateinit var popularItemsAdapter: PopularItemsAdapter
     @Inject
     lateinit var recipeItemsAdapter: RecipeItemsAdapter
-
     @Inject
     lateinit var networkChecker: NetworkChecker
 
@@ -60,6 +60,14 @@ class RecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        args.let {
+            Timber.tag(Constants.DEBUG_TAG).d("Recipe Fragment Args: ${it.shoudReload}")
+            shouldReload = it.shoudReload
+            if (shouldReload) {
+                loadPopularFoodsByApi()
+                loadRecentFoodsByApi()
+            }
+        }
         //Show username
         lifecycleScope.launchWhenCreated { showUsername() }
         // Fetch Data
@@ -70,8 +78,11 @@ class RecipeFragment : Fragment() {
                 networkChecker.observeNetworkState().collect { isNetworkAvailable ->
                     if (isNetworkAvailable) {
                         // Call Apis
-                        recipeViewModel.callPopularApi(recipeViewModel.popularQueries())
-                        recipeViewModel.callRecentApi(recipeViewModel.recentQueries())
+                        Timber.tag(Constants.DEBUG_TAG).d("Recipe Fragment inside network checker")
+                        if (!shouldReload) {
+                            loadPopularFoodsByApi()
+                            loadRecentFoodsByApi()
+                        }
                     } else {
                         loadCachedPopularFoods()
                         loadCachedRecentFoods()
@@ -79,13 +90,13 @@ class RecipeFragment : Fragment() {
                 }
             }
         }
-        loadPopularFoods()
-        loadRecentFoods()
+
     }
 
 
     //---Popular---//
-    private fun loadPopularFoods() {
+    private fun loadPopularFoodsByApi() {
+        recipeViewModel.callPopularApi(recipeViewModel.popularQueries())
         recipeViewModel.popularData.observe(viewLifecycleOwner) {
             when(it) {
                 is ResponseWrapper.Loading -> {
@@ -142,13 +153,9 @@ class RecipeFragment : Fragment() {
     }
 
     private fun setAutoScroll(results: List<ResponseRecipes.Result>) {
-        Timber.tag("TEST").d("Start Auto Scroll")
         lifecycleScope.launch {
-            Timber.tag("TEST").d("Inside lifecycle scope")
             repeat(Constants.REPEAT_TIME) {
-                Timber.tag("TEST").d("Inside repeat")
                 results.indices.forEach { index ->
-                    Timber.tag("TEST").d("index: $index")
                     delay(Constants.DELAY_TIME)
                     binding.popularList.smoothScrollToPosition(index)
                 }
@@ -157,7 +164,8 @@ class RecipeFragment : Fragment() {
     }
 
     //---Recent---//
-    private fun loadRecentFoods() {
+    private fun loadRecentFoodsByApi() {
+        recipeViewModel.callRecentApi(recipeViewModel.recentQueries())
         recipeViewModel.recentData.observe(viewLifecycleOwner) {
             when(it) {
                 is ResponseWrapper.Loading -> {
@@ -196,7 +204,6 @@ class RecipeFragment : Fragment() {
 
     private fun fillRecipeAdapter(result: List<ResponseRecipes.Result>) {
         recipeItemsAdapter.setData(result)
-        //setAutoScroll(result)
     }
 
     private fun initRecentAdapter() {

@@ -14,8 +14,10 @@ import com.google.android.material.chip.ChipGroup
 import dagger.hilt.android.AndroidEntryPoint
 import ir.mahan.wikifoodia.R
 import ir.mahan.wikifoodia.databinding.FragmentMenuBinding
+import ir.mahan.wikifoodia.utils.constants.Constants
 import ir.mahan.wikifoodia.utils.observeOnce
 import ir.mahan.wikifoodia.viewmodels.MenuViewModel
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MenuFragment : BottomSheetDialogFragment() {
@@ -80,7 +82,8 @@ class MenuFragment : BottomSheetDialogFragment() {
             //Submit
             submitBtn.setOnClickListener {
                 menuViewModel.saveMenuData(chipMealTitle, chipMealId, chipDietTitle, chipDietId)
-                findNavController().navigate(MenuFragmentDirections.actionMenuToRecipe().setShouldUpdate(true))
+                findNavController().navigate(MenuFragmentDirections.actionToRecipeFragment().setShoudReload(true))
+                Timber.tag(Constants.DEBUG_TAG).d("Menu Fragment Sending new Filters: $chipDietTitle $chipMealTitle")
             }
         }
     }

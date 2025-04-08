@@ -99,6 +99,9 @@
         android:name="ir.mahan.wikifoodia.ui.menu.MenuFragment"
         android:label="fragment_menu"
         tools:layout="@layout/fragment_menu" />
+    <action
+        android:id="@+id/action_to_menuFragment"
+        app:destination="@id/menuFragment" />
     <!--WebView-->
     <fragment
         android:id="@+id/webViewFragment"
